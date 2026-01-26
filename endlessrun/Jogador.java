@@ -7,11 +7,11 @@ public class Jogador extends ElementoDoJogo {
     private boolean noChao = false;
 
     // --- VARIÁVEIS DE ANIMAÇÃO ---
-    private Image[] sprites;        // O Array que guarda as imagens
+    private final Image[] sprites;        // O Array que guarda as imagens
     private int frameAtual = 0;     // Qual índice do array desenhar (0, 1, 2...)
     private int contadorFrames = 0; // Controla a velocidade da troca
-    private int velocidadeAnimacao = 5; // Troca de imagem a cada 5 atualizações
-    private int quantidadeDeFrames = 4; // Quantas imagens tem sua animação?
+    private final int velocidadeAnimacao = 5; // Troca de imagem a cada 5 atualizações
+    private final int quantidadeDeFrames = 4; // Quantas imagens tem sua animação?
 
     public Jogador(String caminhoBase) {
         super(50, 220, 50, 70); 

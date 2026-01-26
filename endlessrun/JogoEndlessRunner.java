@@ -20,19 +20,17 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     private final int alturaOriginal = 400;
 
     /*gerenciamento dos inimigos */
-    private ArrayList<Inimigo> inimigos;
     private int cooldownSpawn = 0;
     private final int distanciaMinimaSpawn = 40; /*em pixels */
     private final int distanciaMaximaSpawn = 75; /*em pixels */
 
-    private Timer timer;
+    private final Timer timer;
     private boolean gameOver = false;
-    private Random random;
     private Image imagemFundo;
     private int pontuacao = 0;
     
     // Mudança: Agora armazena o caminho da imagem (String)
-    private String caminhoSkinAtual; 
+    private final String caminhoSkinAtual; 
 
     // Construtor recebe o caminho da imagem (ex: "rosto1.png")
     public JogoEndlessRunner(String caminhoImagem) {
@@ -64,7 +62,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         try {
             // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
             // Se o arquivo não existir, o catch captura o erro
-            File file = new File("c:\\Users\\laric\\Downloads\\endlessrun\\endlessrun\\bg.png");
+            File file = new File("Imagens/bg.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
@@ -91,8 +89,10 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // Começa a tocar
             clip.start();
             
-        } catch (Exception e) {
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             System.err.println("Erro ao tocar música: " + e.getMessage());
+        }
+    }
 
     private void gerarInimigoAleatorio(){
         int tipo = random.nextInt(10);
