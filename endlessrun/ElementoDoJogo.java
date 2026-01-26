@@ -1,17 +1,15 @@
 import java.awt.*;
 
-// NÍVEL 1: Classe Base Abstrata
-abstract class ElementoDoJogo {
+public abstract class ElementoDoJogo {
     protected int x, y, largura, altura;
 
-    public ElementoDoJogo(int x, int y, int w, int h) {
+    public ElementoDoJogo(int x, int y, int largura, int altura) {
         this.x = x;
         this.y = y;
-        this.largura = w;
-        this.altura = h;
+        this.largura = largura;
+        this.altura = altura;
     }
 
-    // Polimorfismo será aplicado aqui
     public abstract void atualizar();
     public abstract void desenhar(Graphics g);
 

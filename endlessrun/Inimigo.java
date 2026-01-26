@@ -1,28 +1,49 @@
 import java.awt.*;
-// NÍVEL 2: Classe Intermediária
-class Inimigo extends ElementoDoJogo {
-    protected int velocidade;
+import java.io.File;
+import javax.swing.ImageIcon;
 
-    // Polimorfismo de Sobrecarga (Construtor 1)
-    public Inimigo(int x, int y, int w, int h) {
-        super(x, y, w, h);
-        this.velocidade = 5; // velocidade padrão
+public class Inimigo extends ElementoDoJogo {
+    protected double velocidade;
+    protected Image imagem;
+
+    public Inimigo(int x, int y, int largura, int altura) {
+        super(x, y, largura, altura);
+        this.velocidade = 5;
     }
 
-    // Polimorfismo de Sobrecarga (Construtor 2)
     public Inimigo(int x, int y, int w, int h, int velocidade) {
         super(x, y, w, h);
         this.velocidade = velocidade;
     }
 
-    @Override // Polimorfismo de Sobrescrita
-    public void atualizar() {
-        this.x -= velocidade; // Inimigos andam para a esquerda
+    @Override
+    public void atualizar(){}
+
+    public void atualizar(double velocidadeDoJogo) {
+        this.x -= velocidade*velocidadeDoJogo; // Inimigos andam para a esquerda
+    }
+
+    protected void carregarImagem(String caminho) {
+        try {
+            File arquivo = new File(caminho);
+            if (arquivo.exists()) {
+                ImageIcon ref = new ImageIcon(caminho);
+                this.imagem = ref.getImage();
+            } else {
+                System.err.println("Imagem de inimigo não encontrada: " + caminho);
+            }
+        } catch (Exception e) {
+        }
     }
 
     @Override
     public void desenhar(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect(x, y, largura, altura);
+        if(imagem != null){
+            g.drawImage(imagem, x, y, largura, altura, null);
+        }
+        else{
+            g.setColor(Color.RED);
+            g.fillRect(x, y, largura, altura);
+        }
     }
 }

@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,28 +9,47 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+
 public class JogoEndlessRunner extends JPanel implements ActionListener, KeyListener {
     
     private Jogador jogador;
-    private ArrayList<Inimigo> inimigos;
-    private Timer timer;
+    private double velocidadeDoJogo = 1;
+    /*tamanho da tela */
+    private final int larguraOriginal = 800;
+    private final int alturaOriginal = 400;
+
+    /*gerenciamento dos inimigos */
+    private final ArrayList<Inimigo> inimigos;
+    private int cooldownSpawn = 0;
+    private final int distanciaMinimaSpawn = 40; /*em pixels */
+    private final int distanciaMaximaSpawn = 75; /*em pixels */
+
+    private final Timer timer;
     private boolean gameOver = false;
-    private Random random;
+    private final Random random;
     private Image imagemFundo;
     private int pontuacao = 0;
+    
+    // Mudança: Agora armazena o caminho da imagem (String)
+    private final String caminhoSkinAtual; 
 
-    public JogoEndlessRunner() {
+    // Construtor recebe o caminho da imagem (ex: "rosto1.png")
+    public JogoEndlessRunner(String caminhoImagem) {
+        this.caminhoSkinAtual = caminhoImagem;
+        
         setPreferredSize(new Dimension(800, 400));
         setBackground(Color.PINK);
         setFocusable(true);
         addKeyListener(this);
 
-        jogador = new Jogador();
+        // Cria o jogador passando o caminho do arquivo
+        jogador = new Jogador(caminhoSkinAtual);
         inimigos = new ArrayList<>();
         random = new Random();
 
-        // Tratamento de Exceção (Exemplo funcional: Carregar um recurso)
         carregarRecursos();
 
         tocarMusica();
@@ -39,7 +59,6 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         timer.start();
     }
 
-    // Exemplo de Tratamento de Exceção
     private void carregarRecursos() {
         System.out.println("O Java está procurando arquivos aqui: " + new File(".").getAbsolutePath());
 
@@ -47,7 +66,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         try {
             // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
             // Se o arquivo não existir, o catch captura o erro
-            File file = new File("c:\\Users\\laric\\Downloads\\endlessrun\\endlessrun\\bg.png");
+            File file = new File("Imagens/bg.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
@@ -58,6 +77,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // O jogo continua rodando mesmo sem a imagem (tratamento gracioso)
         }
     }
+
     public void tocarMusica() {
         try {
             // Carrega o arquivo de áudio - ESSE AUDIO PRECISA COLOCAR OS CRÉDITOS - http://opengameart.org/
@@ -74,28 +94,41 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // Começa a tocar
             clip.start();
             
-        } catch (Exception e) {
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             System.err.println("Erro ao tocar música: " + e.getMessage());
         }
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (!gameOver) {
-            pontuacao++;
-            //return;
+    private void gerarInimigoAleatorio(){
+        int tipo = random.nextInt(10);
+        if(tipo < 6){
+            inimigos.add(new CactoPequeno(800,300));
         }
+        else{
+            inimigos.add(new CactoGrande(800, 270));
+        }
+    }
+
+    @Override public void actionPerformed(ActionEvent e) {
+        if (gameOver) return;
+
+        velocidadeDoJogo += 0.001;
+        pontuacao++;
         jogador.atualizar();
-        
-        // Gerar inimigos aleatoriamente
-        if (random.nextInt(100) < 2) { // 2% de chance por frame
-            inimigos.add(new Cacto(800, 250));
+
+        // verifica o cooldown de inimigos
+        if(cooldownSpawn > 0) {
+            cooldownSpawn--;
+        }
+        // gera um inimigo aleatoriamente
+        else{
+            gerarInimigoAleatorio();
+            cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn)/velocidadeDoJogo);
         }
 
-        // Atualizar inimigos e checar colisão
         for (int i = 0; i < inimigos.size(); i++) {
             Inimigo inimigo = inimigos.get(i);
-            inimigo.atualizar();
+            inimigo.atualizar(velocidadeDoJogo);
 
             if (inimigo.getBounds().intersects(jogador.getBounds())) {
                 gameOver = true;
@@ -108,17 +141,22 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             }
         }
 
-        repaint(); // Chama o paintComponent
+        repaint(); 
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
+    @Override protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        AffineTransform oldTransform = g2d.getTransform();
 
         if (this.imagemFundo != null){
             //desenha imagem na posição 0,0 (canto superior esquerdo)
             g.drawImage(this.imagemFundo, 0, 0, null);
         }
+        double escalaX = (double) getWidth() / larguraOriginal;
+        double escalaY = (double) getHeight() / alturaOriginal;
+
+        g2d.scale(escalaX, escalaY);
 
         jogador.desenhar(g);
 
@@ -136,10 +174,11 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             g.setFont(new Font("Arial", Font.BOLD, 20));
             g.drawString("GAME OVER - Pressione espaço para reiniciar", 150, 200);
         }
+
+        g2d.setTransform(oldTransform);
     }
 
-    @Override
-    public void keyPressed(KeyEvent e) {
+    @Override public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             jogador.pular();
         }
@@ -149,22 +188,19 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     }
 
     private void reiniciarJogo() {
-        jogador = new Jogador();
+        // Recria o jogador usando a mesma imagem
+        jogador = new Jogador(caminhoSkinAtual);
         inimigos.clear();
         pontuacao = 0;
         gameOver = false;
         timer.start();
+        velocidadeDoJogo = 1;
     }
 
     @Override public void keyTyped(KeyEvent e) {}
-    @Override public void keyReleased(KeyEvent e) {}
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Endless Runner POO");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(new JogoEndlessRunner());
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
+    @Override public void keyReleased(KeyEvent e){
+        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            jogador.interromperPulo();
+        }
     }
 }
