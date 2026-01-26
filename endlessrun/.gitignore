@@ -1,0 +1,8 @@
+# Ignora todos os arquivos compilados (que estão misturados com os .java)
+*.class
+
+# Ignora configurações do seu VS Code
+.vscode/
+
+# Ignora arquivos de sistema
+Thumbs.db
