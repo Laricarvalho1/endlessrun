@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 public class JogoEndlessRunner extends JPanel implements ActionListener, KeyListener {
@@ -20,12 +22,14 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     private final int alturaOriginal = 400;
 
     /*gerenciamento dos inimigos */
+    private final ArrayList<Inimigo> inimigos;
     private int cooldownSpawn = 0;
     private final int distanciaMinimaSpawn = 40; /*em pixels */
     private final int distanciaMaximaSpawn = 75; /*em pixels */
 
     private final Timer timer;
     private boolean gameOver = false;
+    private final Random random;
     private Image imagemFundo;
     private int pontuacao = 0;
     
@@ -73,6 +77,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // O jogo continua rodando mesmo sem a imagem (tratamento gracioso)
         }
     }
+
     public void tocarMusica() {
         try {
             // Carrega o arquivo de áudio - ESSE AUDIO PRECISA COLOCAR OS CRÉDITOS - http://opengameart.org/
@@ -104,11 +109,11 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         }
     }
 
-            pontuacao++;
     @Override public void actionPerformed(ActionEvent e) {
         if (gameOver) return;
 
         velocidadeDoJogo += 0.001;
+        pontuacao++;
         jogador.atualizar();
 
         // verifica o cooldown de inimigos
