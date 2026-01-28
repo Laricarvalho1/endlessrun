@@ -5,6 +5,7 @@ import javax.swing.ImageIcon;
 public class Jogador extends ElementoDoJogo {
     private double velocidadeY = 0;
     private boolean noChao = false;
+    private int margemDeFolga = 10;
 
     // --- VARIÁVEIS DE ANIMAÇÃO ---
     private final Image[] sprites;        // O Array que guarda as imagens
@@ -45,7 +46,7 @@ public class Jogador extends ElementoDoJogo {
 
     public void pular() {
         if (noChao) {
-            velocidadeY = -16;
+            velocidadeY = -15;
             noChao = false;
         }
     }
@@ -100,9 +101,14 @@ public class Jogador extends ElementoDoJogo {
     }
 
     public boolean colideCom(int inX, int inY, int inL, int inA) {
-        return x < inX + inL &&
-               x + largura > inX &&
-               y < inY + inA &&
-               y + altura > inY;
+        int hitX = x + margemDeFolga;
+        int hitY = y + margemDeFolga;
+        int hitL = largura -(margemDeFolga*2);
+        int hitA = altura - (margemDeFolga*2);
+
+        return hitX < inX + inL &&
+               hitX + hitL > inX &&
+               hitY < inY + inA &&
+               hitY + hitA > inY;
     }
 }

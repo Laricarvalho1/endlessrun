@@ -16,7 +16,9 @@ import javax.swing.*;
 public class JogoEndlessRunner extends JPanel implements ActionListener, KeyListener {
     
     private Jogador jogador;
-    private double velocidadeDoJogo = 1;
+    private double velocidadeDoJogo = 1.5;
+    private final double velocidadeMaxima = 15;
+
     /*tamanho da tela */
     private final int larguraOriginal = 800;
     private final int alturaOriginal = 400;
@@ -24,8 +26,8 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     /*gerenciamento dos inimigos */
     private final ArrayList<Inimigo> inimigos;
     private int cooldownSpawn = 0;
-    private final int distanciaMinimaSpawn = 40; /*em pixels */
-    private final int distanciaMaximaSpawn = 75; /*em pixels */
+    private final int distanciaMinimaSpawn = 50; /*em pixels */
+    private final int distanciaMaximaSpawn = 90; /*em pixels */
 
     private final Timer timer;
     private boolean gameOver = false;
@@ -66,7 +68,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         try {
             // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
             // Se o arquivo não existir, o catch captura o erro
-            File file = new File("Imagens/bg.png");
+            File file = new File("Assets\\bg.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
@@ -81,7 +83,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     public void tocarMusica() {
         try {
             // Carrega o arquivo de áudio - ESSE AUDIO PRECISA COLOCAR OS CRÉDITOS - http://opengameart.org/
-            File arquivoAudio = new File("musica.wav");
+            File arquivoAudio = new File("Assets/musica.wav");
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(arquivoAudio);
             
             // Configura o clip
@@ -100,19 +102,33 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     }
 
     private void gerarInimigoAleatorio(){
-        int tipo = random.nextInt(10);
-        if(tipo < 6){
-            inimigos.add(new CactoPequeno(800,300));
+        int tipo = random.nextInt(11);
+        if(tipo < 2){//20%
+            inimigos.add(new Python(800,300));
         }
-        else{
-            inimigos.add(new CactoGrande(800, 270));
+        else if(tipo < 3){//10%
+            inimigos.add(new Aws(800, 190));
+        }
+        else if(tipo < 4){//10%
+            inimigos.add(new NotF(800, 200));
+        }
+        else if(tipo < 5){//10%
+            inimigos.add(new Calculo(800, 270));
+        }
+        else if(tipo < 7){//20%
+            inimigos.add(new Wifi(800,280));
+        }
+        else if(tipo < 8){//10%
+            inimigos.add(new Teams(800,270));
         }
     }
 
     @Override public void actionPerformed(ActionEvent e) {
-        if (gameOver) return;
+        if(gameOver) return;
 
-        velocidadeDoJogo += 0.001;
+        if(velocidadeDoJogo < velocidadeMaxima)
+            velocidadeDoJogo += 0.001;
+
         pontuacao++;
         jogador.atualizar();
 
@@ -123,7 +139,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         // gera um inimigo aleatoriamente
         else{
             gerarInimigoAleatorio();
-            cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn)/velocidadeDoJogo);
+            cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn) - velocidadeDoJogo);
         }
 
         for (int i = inimigos.size() - 1; i >= 0; i--) {
@@ -154,14 +170,15 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
 
         Toolkit.getDefaultToolkit().sync();
 
-        if (this.imagemFundo != null){
-            //desenha imagem na posição 0,0 (canto superior esquerdo)
-            g.drawImage(this.imagemFundo, 0, 0, null);
-        }
         double escalaX = (double) getWidth() / larguraOriginal;
         double escalaY = (double) getHeight() / alturaOriginal;
 
         g2d.scale(escalaX, escalaY);
+
+        if (this.imagemFundo != null){
+            //desenha imagem na posição 0,0 (canto superior esquerdo)
+            g.drawImage(this.imagemFundo, 0, 0, null);
+        }
 
         jogador.desenhar(g);
 

@@ -84,8 +84,8 @@ public class TelaInicial extends JFrame {
 
         for (int i = 0; i < 6; i++) {
             String nomeDino = "DINO " + (i + 1);
-            String Caminho = "Imagens/Skins/perso" + (i + 1);
-            String nomeArquivo = "rosto" + (i + 1) + ".png";
+            String Caminho = "Assets/Skins/perso" + (i + 1);
+            String nomeArquivo = "Assets/Rostos/rosto" + (i + 1) + ".png";
             Color corBackup = coresDisponiveis[i];
 
             mapaImagens.put(nomeDino, nomeArquivo);
