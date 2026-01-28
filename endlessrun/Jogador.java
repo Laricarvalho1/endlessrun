@@ -98,4 +98,11 @@ public class Jogador extends ElementoDoJogo {
             g.fillRect(x, y, largura, altura);
         }
     }
+
+    public boolean colideCom(int inX, int inY, int inL, int inA) {
+        return x < inX + inL &&
+               x + largura > inX &&
+               y < inY + inA &&
+               y + altura > inY;
+    }
 }

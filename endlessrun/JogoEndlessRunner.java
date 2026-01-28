@@ -54,8 +54,8 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
 
         tocarMusica();
 
-        // Game Loop: Roda a cada 20ms (~50 FPS)
-        timer = new Timer(20, this);
+        // Game Loop: Roda a cada 16ms (~60 FPS)
+        timer = new Timer(16, this);
         timer.start();
     }
 
@@ -126,18 +126,21 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn)/velocidadeDoJogo);
         }
 
-        for (int i = 0; i < inimigos.size(); i++) {
+        for (int i = inimigos.size() - 1; i >= 0; i--) {
             Inimigo inimigo = inimigos.get(i);
             inimigo.atualizar(velocidadeDoJogo);
 
-            if (inimigo.getBounds().intersects(jogador.getBounds())) {
+            // --- OTIMIZAÇÃO DE COLISÃO ---
+            // Usa matemática simples em vez de criar objetos Rectangle (getBounds)
+            // Assumindo que Inimigo tem x, y, largura, altura acessíveis
+            if (jogador.colideCom(inimigo.x, inimigo.y, inimigo.largura, inimigo.altura)) {
                 gameOver = true;
                 timer.stop();
             }
 
-            if (inimigo.x + inimigo.largura < 0) {
+            // Remove inimigos que saíram da tela
+            if (inimigo.x + inimigo.largura < -50) { // Margem de segurança
                 inimigos.remove(i);
-                i--;
             }
         }
 
@@ -148,6 +151,8 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform oldTransform = g2d.getTransform();
+
+        Toolkit.getDefaultToolkit().sync();
 
         if (this.imagemFundo != null){
             //desenha imagem na posição 0,0 (canto superior esquerdo)
@@ -176,6 +181,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         }
 
         g2d.setTransform(oldTransform);
+        g.dispose();
     }
 
     @Override public void keyPressed(KeyEvent e) {
