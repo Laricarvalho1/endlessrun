@@ -7,7 +7,6 @@ public class Jogador extends ElementoDoJogo {
     private boolean noChao = false;
     private int margemDeFolga = 10;
 
-    // --- VARIÁVEIS DE ANIMAÇÃO ---
     private final Image[] sprites;        // O Array que guarda as imagens
     private int frameAtual = 0;     // Qual índice do array desenhar (0, 1, 2...)
     private int contadorFrames = 0; // Controla a velocidade da troca

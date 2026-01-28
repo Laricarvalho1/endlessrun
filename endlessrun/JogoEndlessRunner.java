@@ -68,7 +68,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         try {
             // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
             // Se o arquivo não existir, o catch captura o erro
-            File file = new File("Assets\\bg.png");
+            File file = new File("Assets/bg.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
@@ -146,7 +146,6 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             Inimigo inimigo = inimigos.get(i);
             inimigo.atualizar(velocidadeDoJogo);
 
-            // --- OTIMIZAÇÃO DE COLISÃO ---
             // Usa matemática simples em vez de criar objetos Rectangle (getBounds)
             // Assumindo que Inimigo tem x, y, largura, altura acessíveis
             if (jogador.colideCom(inimigo.x, inimigo.y, inimigo.largura, inimigo.altura)) {
@@ -155,7 +154,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             }
 
             // Remove inimigos que saíram da tela
-            if (inimigo.x + inimigo.largura < -50) { // Margem de segurança
+            if (inimigo.x + inimigo.largura < -50) {
                 inimigos.remove(i);
             }
         }
@@ -190,7 +189,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
        
        // Desenha no X=650 (direita) e Y=30 (topo)
        g.drawString("Pontuação: " + pontuacao, 20, 30); 
-       //
+       
         if (gameOver) {
             g.setColor(Color.BLUE);
             g.setFont(new Font("Arial", Font.BOLD, 20));
