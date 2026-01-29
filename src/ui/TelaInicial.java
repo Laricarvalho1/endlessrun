@@ -1,3 +1,4 @@
+package src.ui;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
@@ -8,6 +9,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+
+import src.core.JogoEndlessRunner;
 
 public class TelaInicial extends JFrame {
 
@@ -84,8 +87,8 @@ public class TelaInicial extends JFrame {
 
         for (int i = 0; i < 6; i++) {
             String nomeDino = "DINO " + (i + 1);
-            String Caminho = "Assets/Skins/perso" + (i + 1);
-            String nomeArquivo = "Assets/Rostos/rosto" + (i + 1) + ".png";
+            String Caminho = "src/Assets/Skins/perso" + (i + 1);
+            String nomeArquivo = "src/Assets/Rostos/rosto" + (i + 1) + ".png";
             Color corBackup = coresDisponiveis[i];
 
             mapaImagens.put(nomeDino, nomeArquivo);
@@ -205,10 +208,5 @@ public class TelaInicial extends JFrame {
         frameJogo.pack();
         frameJogo.setLocationRelativeTo(null);
         frameJogo.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) {}
-        SwingUtilities.invokeLater(() -> new TelaInicial().setVisible(true));
     }
 }

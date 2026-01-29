@@ -1,3 +1,8 @@
+package src.core;
+import src.entidades.inimigos.*;
+import src.entidades.jogador.Jogador;
+import src.ui.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
@@ -34,7 +39,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     private final Random random;
     private Image imagemFundo;
     private int pontuacao = 0;
-    
+    private Clip musica; 
     // Mudança: Agora armazena o caminho da imagem (String)
     private final String caminhoSkinAtual; 
 
@@ -68,7 +73,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         try {
             // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
             // Se o arquivo não existir, o catch captura o erro
-            File file = new File("Assets/bg.png");
+            File file = new File("src/Assets/bg.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
@@ -79,22 +84,24 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // O jogo continua rodando mesmo sem a imagem (tratamento gracioso)
         }
     }
-
+    public void pararmusica(){
+    musica.stop(); 
+    }
     public void tocarMusica() {
         try {
             // Carrega o arquivo de áudio - ESSE AUDIO PRECISA COLOCAR OS CRÉDITOS - http://opengameart.org/
-            File arquivoAudio = new File("Assets/musica.wav");
+            File arquivoAudio = new File("src/Assets/musica.wav");
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(arquivoAudio);
             
             // Configura o clip
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
+             musica = AudioSystem.getClip();
+            musica.open(audioStream);
             
             // Configura para repetir para sempre (loop)
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            musica.loop(Clip.LOOP_CONTINUOUSLY);
             
             // Começa a tocar
-            clip.start();
+            musica.start();
             
         } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
             System.err.println("Erro ao tocar música: " + e.getMessage());
@@ -123,6 +130,22 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         }
     }
 
+    private void processarGameOver() {
+    gameOver = true;
+    timer.stop();
+    pararmusica();
+    
+    // Chama a tela de pontuação após um breve delay
+    Timer delayTimer = new Timer(1000, new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            mostrarTelaPontuacao();
+        }
+    });
+    delayTimer.setRepeats(false);
+    delayTimer.start();
+    }
+
     @Override public void actionPerformed(ActionEvent e) {
         if(gameOver) return;
 
@@ -139,7 +162,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         // gera um inimigo aleatoriamente
         else{
             gerarInimigoAleatorio();
-            cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn) - velocidadeDoJogo);
+           cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn) - velocidadeDoJogo);
         }
 
         for (int i = inimigos.size() - 1; i >= 0; i--) {
@@ -149,8 +172,8 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // Usa matemática simples em vez de criar objetos Rectangle (getBounds)
             // Assumindo que Inimigo tem x, y, largura, altura acessíveis
             if (jogador.colideCom(inimigo.x, inimigo.y, inimigo.largura, inimigo.altura)) {
-                gameOver = true;
-                timer.stop();
+                processarGameOver();
+                return;
             }
 
             // Remove inimigos que saíram da tela
@@ -219,10 +242,29 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         velocidadeDoJogo = 1;
     }
 
+    private void mostrarTelaPontuacao() {
+    SwingUtilities.invokeLater(() -> {
+        // Cria a tela de pontuação
+        TelaPontuacao telaPontuacao = new TelaPontuacao(pontuacao, caminhoSkinAtual);
+        telaPontuacao.setVisible(true);
+        
+        // Fecha a janela atual do jogo
+        Window window = SwingUtilities.getWindowAncestor(this);
+        if (window != null) {
+            window.dispose();
+        }
+    });
+    }
+
     @Override public void keyTyped(KeyEvent e) {}
     @Override public void keyReleased(KeyEvent e){
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
             jogador.interromperPulo();
         }
+    }
+
+    public static void main(String[] args) {
+        try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); } catch (Exception e) { System.err.print(e); }
+        SwingUtilities.invokeLater(() -> new TelaInicial().setVisible(true));
     }
 }

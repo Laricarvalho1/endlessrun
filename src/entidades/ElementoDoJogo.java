@@ -1,7 +1,8 @@
+package src.entidades;
 import java.awt.*;
 
 public abstract class ElementoDoJogo {
-    protected int x, y, largura, altura;
+    public int x, y, largura, altura;
 
     public ElementoDoJogo(int x, int y, int largura, int altura) {
         this.x = x;

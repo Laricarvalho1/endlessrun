@@ -1,6 +1,9 @@
+package src.entidades.inimigos;
 import java.awt.*;
 import java.io.File;
 import javax.swing.ImageIcon;
+
+import src.entidades.ElementoDoJogo;
 
 public class Inimigo extends ElementoDoJogo {
     protected double velocidade;

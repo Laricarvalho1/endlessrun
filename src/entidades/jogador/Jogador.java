@@ -1,6 +1,9 @@
+package src.entidades.jogador;
 import java.awt.*;
 import java.io.File;
 import javax.swing.ImageIcon;
+
+import src.entidades.ElementoDoJogo;
 
 public class Jogador extends ElementoDoJogo {
     private double velocidadeY = 0;
@@ -36,7 +39,7 @@ public class Jogador extends ElementoDoJogo {
                 if (arq.exists()) {
                     sprites[i] = new ImageIcon(caminhoFinal).getImage();
                 } else {
-                    System.err.println("⚠️ Frame faltando: " + caminhoFinal);
+                    System.err.println("Frame faltando: " + caminhoFinal);
                 }
             } catch (Exception e) {
             }

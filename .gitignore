@@ -1,4 +1,5 @@
 # Ignora todos os arquivos compilados (que estão misturados com os .java)
+**/*.class
 *.class
 
 # Ignora configurações do seu VS Code
