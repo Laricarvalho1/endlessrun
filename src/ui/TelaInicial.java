@@ -1,28 +1,18 @@
 package src.ui;
+
 import java.awt.*;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
 import src.core.JogoEndlessRunner;
 
 public class TelaInicial extends JFrame {
 
     private ButtonGroup grupoPersonagens = new ButtonGroup();
-    private Map<String, String> mapaImagens = new HashMap<>();
-    private Map<String, Color> mapaCoresBackup = new HashMap<>();
     private String personagemSelecionado = null;
-
-    private final Color[] coresDisponiveis = {
-        Color.BLUE, Color.BLACK, Color.ORANGE, 
-        Color.MAGENTA, Color.CYAN, Color.DARK_GRAY
-    };
 
     public TelaInicial() {
         setTitle("DINOCOMP - Seleção de Personagem");
@@ -31,6 +21,7 @@ public class TelaInicial extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
+        // --- TÍTULO ---
         JLabel tituloPrincipal = new JLabel("DINOCOMP", SwingConstants.CENTER);
         tituloPrincipal.setFont(new Font("Arial", Font.BOLD, 36));
         tituloPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
@@ -39,26 +30,25 @@ public class TelaInicial extends JFrame {
         JPanel painelConteudo = new JPanel(new GridLayout(1, 2));
         add(painelConteudo, BorderLayout.CENTER);
 
+        // --- PAINEL ESQUERDA (BOTÕES) ---
         JPanel painelBotoes = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 0, 15, 0);
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.ipadx = 40; 
-        gbc.ipady = 15; 
+        gbc.ipadx = 60; 
+        gbc.ipady = 20; 
 
         JButton btnComecar = new JButton("COMEÇAR");
-        btnComecar.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnComecar.setBackground(new Color(50, 205, 50)); 
-        btnComecar.setForeground(Color.BLACK);
-        
+        btnComecar.setFont(new Font("SansSerif", Font.BOLD, 18));
+        btnComecar.setBackground(Color.WHITE);
+        btnComecar.setBorder(new LineBorder(new Color(50, 205, 50), 2));
         btnComecar.addActionListener(e -> {
             if (personagemSelecionado != null) {
-                String caminhoImagem = personagemSelecionado;
                 this.dispose(); 
-                iniciarJogo(caminhoImagem);
+                iniciarJogo(personagemSelecionado);
             } else {
-                JOptionPane.showMessageDialog(this, "Selecione um personagem!", "Atenção", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Selecione um personagem!");
             }
         });
         
@@ -66,16 +56,16 @@ public class TelaInicial extends JFrame {
         painelBotoes.add(btnComecar, gbc);
 
         JButton btnSair = new JButton("SAIR");
-        btnSair.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnSair.setBackground(new Color(220, 20, 60)); 
-        btnSair.setForeground(Color.BLACK);
+        btnSair.setFont(new Font("SansSerif", Font.BOLD, 18));
+        btnSair.setBackground(Color.WHITE);
+        btnSair.setBorder(new LineBorder(new Color(220, 20, 60), 2));
         btnSair.addActionListener(e -> System.exit(0)); 
         
         gbc.gridy = 1;
         painelBotoes.add(btnSair, gbc);
-
         painelConteudo.add(painelBotoes);
 
+        // --- PAINEL DIREITA (GRID) ---
         JPanel painelPersonagens = new JPanel(new BorderLayout());
         JLabel lblTituloPers = new JLabel("ESCOLHA SEU AVATAR", SwingConstants.CENTER);
         lblTituloPers.setFont(new Font("Arial", Font.BOLD, 14));
@@ -85,128 +75,60 @@ public class TelaInicial extends JFrame {
         JPanel gridImagens = new JPanel(new GridLayout(2, 3, 10, 10));
         gridImagens.setBorder(BorderFactory.createEmptyBorder(0, 10, 20, 20));
 
-        for (int i = 0; i < 6; i++) {
-            String nomeDino = "DINO " + (i + 1);
-            String Caminho = "src/Assets/Skins/perso" + (i + 1);
-            String nomeArquivo = "src/Assets/Rostos/rosto" + (i + 1) + ".png";
-            Color corBackup = coresDisponiveis[i];
+        for (int i = 1; i <= 6; i++) {
+            String nomeDino = "DINO " + i;
+            String pastaPerso = "src/assets/Skins/perso" + i;
+            String caminhoFoto = pastaPerso + "/frame (1).png";
 
-            mapaImagens.put(nomeDino, nomeArquivo);
-            mapaCoresBackup.put(nomeDino, corBackup);
-
-            JToggleButton btnPersonagem = new JToggleButton();
-            btnPersonagem.setActionCommand(Caminho);
+            JToggleButton btn = new JToggleButton();
+            btn.setActionCommand(pastaPerso); // Envia a pasta para o jogo
+            btn.setIcon(criarCard(nomeDino, caminhoFoto, false));
+            btn.setSelectedIcon(criarCard(nomeDino, caminhoFoto, true));
+            btn.setBackground(Color.WHITE);
+            btn.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
             
-            btnPersonagem.setIcon(criarIconeCircular(nomeDino, nomeArquivo, corBackup, false));
-            btnPersonagem.setSelectedIcon(criarIconeCircular(nomeDino, nomeArquivo, corBackup, true));
-            
-            btnPersonagem.setBorder(new LineBorder(Color.GRAY, 1));
-            btnPersonagem.setFocusPainted(false);
-            
-            btnPersonagem.addActionListener(e -> {
-                personagemSelecionado = e.getActionCommand();
-            });
-
-            grupoPersonagens.add(btnPersonagem);
-            gridImagens.add(btnPersonagem);
+            btn.addActionListener(e -> personagemSelecionado = e.getActionCommand());
+            grupoPersonagens.add(btn);
+            gridImagens.add(btn);
         }
-
         painelPersonagens.add(gridImagens, BorderLayout.CENTER);
         painelConteudo.add(painelPersonagens);
     }
 
-    // --- MÁGICA DO RECORTE CIRCULAR AQUI ---
-    private ImageIcon criarIconeCircular(String texto, String nomeArquivo, Color corBackup, boolean selecionado) {
-        int w = 90;
-        int h = 130;
+    private ImageIcon criarCard(String txt, String path, boolean sel) {
+        int w = 90, h = 130;
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = img.createGraphics();
-        
-        // Ativa Anti-aliasing para o círculo ficar lisinho (sem serrilhado)
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        Image imagemCabeca = null;
         try {
-            File arquivo = new File(nomeArquivo);
-            if (arquivo.exists()) imagemCabeca = ImageIO.read(arquivo);
-        } catch (IOException e) { }
+            File f = new File(path);
+            if (f.exists()) g2.drawImage(ImageIO.read(f), 10, 10, w-20, h-45, null);
+        } catch (IOException e) {}
 
-        int centroX = w / 2;
-        int yCabeca = 10;
-        int tamanhoCabeca = 40; // Tamanho da bolinha
-
-        // --- 1. DESENHAR A CABEÇA RECORTADA ---
-        if (imagemCabeca != null) {
-            // Define o formato do círculo
-            Ellipse2D circulo = new Ellipse2D.Float(centroX - (tamanhoCabeca/2f), yCabeca, tamanhoCabeca, tamanhoCabeca);
-            
-            // Salva o estado original do recorte
-            Shape clipOriginal = g2.getClip();
-            
-            // Aplica o recorte circular
-            g2.setClip(circulo);
-            
-            // Desenha a imagem (ela será cortada automaticamente)
-            g2.drawImage(imagemCabeca, (int)(centroX - (tamanhoCabeca/2f)), yCabeca, tamanhoCabeca, tamanhoCabeca, null);
-            
-            // Remove o recorte para desenhar o resto
-            g2.setClip(clipOriginal);
-            
-            // Desenha uma borda branca fina ao redor da foto (estilo Google)
-            g2.setStroke(new BasicStroke(2));
-            g2.setColor(Color.WHITE);
-            g2.draw(circulo);
-            
-            // Se estiver selecionado, desenha uma borda colorida extra
-            if (selecionado) {
-                g2.setColor(new Color(50, 205, 50)); // Verde
-                g2.setStroke(new BasicStroke(2));
-                g2.draw(circulo);
-            }
-        } else {
-            // Se não tiver imagem, bolinha colorida
-            g2.setColor(corBackup); 
-            g2.fillOval(centroX - (tamanhoCabeca/2), yCabeca, tamanhoCabeca, tamanhoCabeca);
-        }
-
-        // --- 2. DESENHAR O CORPO DE PALITO ---
-        g2.setStroke(new BasicStroke(3));
-        g2.setColor(Color.BLACK);
-        
-        int pescocoY = yCabeca + tamanhoCabeca;
-        int cinturaY = pescocoY + 25;
-
-        g2.drawLine(centroX, pescocoY, centroX, cinturaY); // Tronco
-        g2.drawLine(centroX - 15, pescocoY + 10, centroX + 15, pescocoY + 10); // Braços
-        g2.drawLine(centroX, cinturaY, centroX - 10, cinturaY + 20); // Perna E
-        g2.drawLine(centroX, cinturaY, centroX + 10, cinturaY + 20); // Perna D
-
-        // Borda do botão
-        if (selecionado) {
+        if (sel) {
+            g2.setColor(new Color(50, 205, 50, 35));
+            g2.fillRect(2, 2, w-4, h-4);
             g2.setColor(new Color(50, 205, 50));
             g2.setStroke(new BasicStroke(2));
-            g2.drawRect(2, 2, w-4, h-4);
         } else {
             g2.setColor(Color.LIGHT_GRAY);
-            g2.setStroke(new BasicStroke(1));
-            g2.drawRect(2, 2, w-4, h-4);
         }
+        g2.drawRect(2, 2, w-4, h-4);
 
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
-        FontMetrics fm = g2.getFontMetrics();
-        g2.drawString(texto, (w - fm.stringWidth(texto)) / 2, h - 8);
-        
+        g2.drawString(txt, (w - g2.getFontMetrics().stringWidth(txt))/2, h-10);
         g2.dispose();
         return new ImageIcon(img);
     }
 
-    private void iniciarJogo(String caminhoImagem) {
-        JFrame frameJogo = new JFrame("Endless Runner POO");
-        frameJogo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frameJogo.add(new JogoEndlessRunner(caminhoImagem));
-        frameJogo.pack();
-        frameJogo.setLocationRelativeTo(null);
-        frameJogo.setVisible(true);
+    private void iniciarJogo(String pasta) {
+        JFrame frame = new JFrame("DINOCOMP");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(new JogoEndlessRunner(pasta));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }
