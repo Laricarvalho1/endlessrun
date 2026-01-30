@@ -91,7 +91,7 @@ public class TelaInicial extends JFrame {
 
         for (int i = 0; i < 6; i++) {
             String nomeDino = "DINO " + (i + 1);
-            String Caminho = "src/Assets/Skins/perso" + (i + 1) + ".png";
+            String Caminho = "src/Assets/Skins/perso" + (i + 1);
             String nomeArquivo = "src/Assets/Rostos/rosto" + (i + 1) + ".png";
             Color corBackup = coresDisponiveis[i];
 

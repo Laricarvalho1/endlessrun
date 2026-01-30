@@ -1,9 +1,8 @@
-package src.entidades.jogador;
+package entidades.jogador;
+import entidades.ElementoDoJogo;
 import java.awt.*;
 import java.io.File;
 import javax.swing.ImageIcon;
-
-import src.entidades.ElementoDoJogo;
 
 public class Jogador extends ElementoDoJogo {
     private double velocidadeY = 0;
