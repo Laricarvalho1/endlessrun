@@ -1,4 +1,4 @@
-package src.entidades.inimigos;
+package entidades.inimigos;
 public class Calculo extends Inimigo {
     public Calculo(int x, int y){
         super(x, y, 55, 70);

@@ -1,4 +1,4 @@
-package src.entidades;
+package entidades;
 import java.awt.*;
 
 public abstract class ElementoDoJogo {

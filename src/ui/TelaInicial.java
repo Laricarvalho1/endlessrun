@@ -1,4 +1,5 @@
-package src.ui;
+package ui;
+import core.JogoEndlessRunner;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
@@ -9,8 +10,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
-import src.core.JogoEndlessRunner;
 
 public class TelaInicial extends JFrame {
 
@@ -55,8 +54,13 @@ public class TelaInicial extends JFrame {
         btnComecar.addActionListener(e -> {
             if (personagemSelecionado != null) {
                 String caminhoImagem = personagemSelecionado;
-                this.dispose(); 
+
+               //primeiro abre o jogo
                 iniciarJogo(caminhoImagem);
+
+                //depois fecha a tela inicial
+                this.setVisible(false);
+                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Selecione um personagem!", "Atenção", JOptionPane.WARNING_MESSAGE);
             }
@@ -87,7 +91,7 @@ public class TelaInicial extends JFrame {
 
         for (int i = 0; i < 6; i++) {
             String nomeDino = "DINO " + (i + 1);
-            String Caminho = "src/Assets/Skins/perso" + (i + 1);
+            String Caminho = "src/Assets/Skins/perso" + (i + 1) + ".png";
             String nomeArquivo = "src/Assets/Rostos/rosto" + (i + 1) + ".png";
             Color corBackup = coresDisponiveis[i];
 

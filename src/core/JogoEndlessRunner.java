@@ -1,7 +1,7 @@
-package src.core;
-import src.entidades.inimigos.*;
-import src.entidades.jogador.Jogador;
-import src.ui.*;
+package core;
+import entidades.inimigos.*;
+import entidades.jogador.Jogador;
+import ui.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -17,6 +17,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
+import ui.TelaInicial;
 
 public class JogoEndlessRunner extends JPanel implements ActionListener, KeyListener {
     
@@ -220,7 +221,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         }
 
         g2d.setTransform(oldTransform);
-        g.dispose();
+        //g.dispose(); isso aqui tira a capacidade do java de desenhar a janela
     }
 
     @Override public void keyPressed(KeyEvent e) {

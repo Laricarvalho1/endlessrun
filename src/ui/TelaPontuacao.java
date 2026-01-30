@@ -1,7 +1,7 @@
-package src.ui;
+package ui;
 import javax.swing.*;
 
-import src.core.JogoEndlessRunner;
+import core.JogoEndlessRunner;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
