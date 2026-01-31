@@ -1,8 +1,6 @@
 package core;
 import entidades.inimigos.*;
 import entidades.jogador.Jogador;
-import ui.*;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
@@ -17,7 +15,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import ui.TelaInicial;
+import ui.*;
 
 public class JogoEndlessRunner extends JPanel implements ActionListener, KeyListener {
     
@@ -76,11 +74,11 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         try {
             // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
             // Se o arquivo não existir, o catch captura o erro
-            File file = new File("src/Assets/bg.png");
+            File file = new File("src/assets/fundo.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
-                System.out.println("Imagem bg.png não encontrada!");
+                System.out.println("Imagem fundo.png não encontrada!");
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar recursos: " + e.getMessage());
@@ -204,7 +202,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
 
         if (this.imagemFundo != null){
             //desenha imagem na posição 0,0 (canto superior esquerdo)
-            g.drawImage(this.imagemFundo, 0, 0, null);
+            g.drawImage(this.imagemFundo, 0, 0, larguraOriginal, alturaOriginal, null);
         }
 
         jogador.desenhar(g);
@@ -213,10 +211,10 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             i.desenhar(g);
         }
         g.setColor(Color.BLUE); 
-        g.setFont(new Font("Roboto", Font.BOLD, 20)); 
+        g.setFont(new Font("Courier New", Font.BOLD, 20)); 
        
        // Desenha no X=650 (direita) e Y=30 (topo)
-       g.drawString("Pontuação: " + pontuacao, 20, 30); 
+       g.drawString("PONTUAÇÃO: " + pontuacao, 20, 30); 
        
         if (gameOver) {
             g.setColor(Color.BLUE);
