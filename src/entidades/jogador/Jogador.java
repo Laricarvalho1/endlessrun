@@ -7,16 +7,28 @@ import javax.swing.ImageIcon;
 public class Jogador extends ElementoDoJogo {
     private double velocidadeY = 0;
     private boolean noChao = false;
-    private int margemDeFolga = 10;
+    private int limiteChao;
 
+    /*Controle da colizão */
+    private final int margemDeFolga = 15;
+
+    /*Controle da animação */
     private final Image[] sprites;        // O Array que guarda as imagens
     private int frameAtual = 0;     // Qual índice do array desenhar (0, 1, 2...)
     private int contadorFrames = 0; // Controla a velocidade da troca
     private final int velocidadeAnimacao = 5; // Troca de imagem a cada 5 atualizações
-    private final int quantidadeDeFrames = 4; // Quantas imagens tem sua animação?
+    private final int quantidadeDeFrames = 4; // quantidade de imagens na animação
 
-    public Jogador(String caminhoBase) {
-        super(50, 220, 50, 70); 
+    /*Controle da mudança de tamanho */
+    private final int larguraOriginal;
+    private final int alturaOriginal;
+    private boolean Encolhido = false;
+
+    public Jogador(String caminhoBase) {// 50 70
+        super(50, 220, 80, 112); 
+        larguraOriginal = 80;
+        alturaOriginal = 112;
+        limiteChao = 340 - alturaOriginal;
 
         // Inicializa o array
         sprites = new Image[quantidadeDeFrames];
@@ -24,14 +36,10 @@ public class Jogador extends ElementoDoJogo {
         carregarSprites(caminhoBase);
     }
 
-    private void carregarSprites(String caminhoOriginal) {
-        // CORREÇÃO: Como a string já é o caminho base (sem .png), 
-        // usamos ela diretamente como prefixo.
-        String prefixo = caminhoOriginal;
-
+    private void carregarSprites(String caminho) {
         for (int i = 0; i < quantidadeDeFrames; i++) {
-            // Monta o nome do arquivo: "caminho" + " (0).png"
-            String caminhoFinal = prefixo + "/Frame (" + (i+1) + ").png";
+            // Monta o nome do arquivo: "caminho" + "/Frame (0).png"
+            String caminhoFinal = caminho + "/Frame (" + (i+1) + ").png";
             
             try {
                 File arq = new File(caminhoFinal);
@@ -46,8 +54,12 @@ public class Jogador extends ElementoDoJogo {
     }
 
     public void pular() {
+        if (Encolhido) {
+            ResetarTamanho();
+        }
+
         if (noChao) {
-            velocidadeY = -15;
+            velocidadeY = -14;
             noChao = false;
         }
     }
@@ -58,19 +70,47 @@ public class Jogador extends ElementoDoJogo {
         }
     }
 
+    public void Encolher(){
+        if(noChao){
+            largura = larguraOriginal/2;
+            altura = alturaOriginal/2;
+            y = limiteChao + (alturaOriginal - altura);
+            Encolhido = true;
+        }
+    }
+
+    public void ResetarTamanho(){
+        if(Encolhido){
+            largura = larguraOriginal;
+            altura = alturaOriginal;
+            y = limiteChao;
+            Encolhido = false;
+        }
+    }
+
     @Override
     public void atualizar() {
-        // --- FÍSICA ---
+        /*controle da posição y do jogador */
         y += velocidadeY;
         velocidadeY += 1;
 
-        if (y >= 270) { 
-            y = 270;
-            velocidadeY = 0;
-            noChao = true;
+        if(!Encolhido){
+            if (y >= limiteChao) { 
+                y = limiteChao;
+                velocidadeY = 0;
+                noChao = true;
+            }
+        }
+        
+        else{
+            if (y >= limiteChao + (alturaOriginal - altura)){
+                y = limiteChao + (alturaOriginal - altura);
+                velocidadeY = 0;
+                noChao = true;
+            }
         }
 
-        // --- LÓGICA DO ARRAY DE IMAGENS ---
+        /*Controle da animação */
         if (noChao) {
             // Só anima se estiver correndo no chão
             contadorFrames++;
@@ -84,6 +124,7 @@ public class Jogador extends ElementoDoJogo {
                 }
             }
         } else {
+            // Frame fixo ao pular
             frameAtual = 2;
         }
     }

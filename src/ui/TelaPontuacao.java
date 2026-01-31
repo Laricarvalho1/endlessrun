@@ -151,6 +151,7 @@ public class TelaPontuacao extends JFrame {
         frameJogo.add(new JogoEndlessRunner(caminhoImagem));
         frameJogo.pack();
         frameJogo.setLocationRelativeTo(null);
+        frameJogo.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frameJogo.setVisible(true);
     }
     

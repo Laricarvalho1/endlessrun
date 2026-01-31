@@ -32,16 +32,19 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     /*gerenciamento dos inimigos */
     private final ArrayList<Inimigo> inimigos;
     private int cooldownSpawn = 0;
-    private final int distanciaMinimaSpawn = 50; /*em pixels */
-    private final int distanciaMaximaSpawn = 90; /*em pixels */
+    private final int distanciaMinimaSpawn = 35; /*em pixels */
+    private final int distanciaMaximaSpawn = 60; /*em pixels */
 
     private final Timer timer;
     private boolean gameOver = false;
     private final Random random;
     private Image imagemFundo;
     private int pontuacao = 0;
+
+    /*efeitos sonoros */
     private Clip musica; 
-    // Mudança: Agora armazena o caminho da imagem (String)
+
+    /*Caminho da skin atual */
     private final String caminhoSkinAtual; 
 
     // Construtor recebe o caminho da imagem (ex: "rosto1.png")
@@ -59,7 +62,6 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         random = new Random();
 
         carregarRecursos();
-
         tocarMusica();
 
         // Game Loop: Roda a cada 16ms (~60 FPS)
@@ -85,9 +87,11 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             // O jogo continua rodando mesmo sem a imagem (tratamento gracioso)
         }
     }
+
     public void pararmusica(){
     musica.stop(); 
     }
+
     public void tocarMusica() {
         try {
             // Carrega o arquivo de áudio - ESSE AUDIO PRECISA COLOCAR OS CRÉDITOS - http://opengameart.org/
@@ -95,7 +99,7 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(arquivoAudio);
             
             // Configura o clip
-             musica = AudioSystem.getClip();
+            musica = AudioSystem.getClip();
             musica.open(audioStream);
             
             // Configura para repetir para sempre (loop)
@@ -115,10 +119,10 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             inimigos.add(new Python(800,300));
         }
         else if(tipo < 3){//10%
-            inimigos.add(new Aws(800, 190));
+            inimigos.add(new Aws(800, 210));
         }
         else if(tipo < 4){//10%
-            inimigos.add(new NotF(800, 200));
+            inimigos.add(new ChatGPT(800, 220));
         }
         else if(tipo < 5){//10%
             inimigos.add(new Calculo(800, 270));
@@ -225,14 +229,29 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     }
 
     @Override public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_W) {
             jogador.pular();
         }
         if (e.getKeyCode() == KeyEvent.VK_SPACE && gameOver) {
-            reiniciarJogo();
+            //reiniciarJogo();
+            // A tela de pontuação tornou isso obsoleto, desativei para evitar conflitos
+        }
+        if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_S){
+            jogador.Encolher();
         }
     }
 
+    @Override public void keyTyped(KeyEvent e) {}
+    @Override public void keyReleased(KeyEvent e){
+        if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_W){
+            jogador.interromperPulo();
+        }
+        if(e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_S){
+            jogador.ResetarTamanho();
+        }
+    }
+
+    // Tela de pontuação tornou obsoleto
     private void reiniciarJogo() {
         // Recria o jogador usando a mesma imagem
         jogador = new Jogador(caminhoSkinAtual);
@@ -255,13 +274,6 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             window.dispose();
         }
     });
-    }
-
-    @Override public void keyTyped(KeyEvent e) {}
-    @Override public void keyReleased(KeyEvent e){
-        if(e.getKeyCode() == KeyEvent.VK_SPACE){
-            jogador.interromperPulo();
-        }
     }
 
     public static void main(String[] args) {

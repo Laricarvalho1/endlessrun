@@ -134,6 +134,7 @@ public class TelaInicial extends JFrame {
         frame.add(new JogoEndlessRunner(pasta));
         frame.pack();
         frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
     }
 }
