@@ -10,8 +10,8 @@ import javax.swing.border.LineBorder;
 
 public class TelaInicial extends JFrame {
 
-    private ButtonGroup grupoPersonagens = new ButtonGroup();
-    private String personagemSelecionado = null;
+    private ButtonGroup grupoPersonagens = new ButtonGroup(); //garante a escolha de um personagem por vez
+    private String personagemSelecionado = null; //guarda o caminho da pasta escolhida da skin
 
     public TelaInicial() {
         setTitle("DINOCOMP - Seleção de Personagem");
@@ -22,7 +22,7 @@ public class TelaInicial extends JFrame {
 
         // --- TÍTULO ---
         JLabel tituloPrincipal = new JLabel("DINOCOMP", SwingConstants.CENTER);
-        tituloPrincipal.setFont(new Font("Arial", Font.BOLD, 36));
+        tituloPrincipal.setFont(new Font("Courier New", Font.BOLD, 46));
         tituloPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         add(tituloPrincipal, BorderLayout.NORTH);
 
@@ -32,14 +32,18 @@ public class TelaInicial extends JFrame {
         // --- PAINEL ESQUERDA (BOTÕES) ---
         JPanel painelBotoes = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 0, 15, 0);
-        gbc.gridx = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.ipadx = 60; 
-        gbc.ipady = 20; 
+
+        gbc.insets = new Insets(40, 40, 40, 40); //margem
+        gbc.gridx = 0; //coluna 0
+        gbc.fill = GridBagConstraints.BOTH; //estica em tudo
+        gbc.weightx = 1.0; // Ocupa toda a largura disponível proporcionalmente
+        gbc.weighty = 1.0; // Ocupa toda a altura disponível proporcionalmente
+
+        //gbc.ipadx = 160; 
+        //gbc.ipady = 120; 
 
         JButton btnComecar = new JButton("COMEÇAR");
-        btnComecar.setFont(new Font("SansSerif", Font.BOLD, 18));
+        btnComecar.setFont(new Font("Courier New", Font.BOLD, 35));
         btnComecar.setBackground(Color.WHITE);
         btnComecar.setBorder(new LineBorder(new Color(50, 205, 50), 2));
         btnComecar.addActionListener(e -> {
@@ -61,19 +65,29 @@ public class TelaInicial extends JFrame {
         painelBotoes.add(btnComecar, gbc);
 
         JButton btnSair = new JButton("SAIR");
-        btnSair.setFont(new Font("SansSerif", Font.BOLD, 18));
+        btnSair.setFont(new Font("Courier New", Font.BOLD, 35));
         btnSair.setBackground(Color.WHITE);
         btnSair.setBorder(new LineBorder(new Color(220, 20, 60), 2));
         btnSair.addActionListener(e -> System.exit(0)); 
-        
+
+         // Botão 1
+        gbc.gridy = 0;
+        painelBotoes.add(btnComecar, gbc);
+
+        // Botão 2
         gbc.gridy = 1;
         painelBotoes.add(btnSair, gbc);
+
         painelConteudo.add(painelBotoes);
+        
+       /* gbc.gridy = 1;
+        painelBotoes.add(btnSair, gbc);
+        painelConteudo.add(painelBotoes); */
 
         // --- PAINEL DIREITA (GRID) ---
         JPanel painelPersonagens = new JPanel(new BorderLayout());
-        JLabel lblTituloPers = new JLabel("ESCOLHA SEU AVATAR", SwingConstants.CENTER);
-        lblTituloPers.setFont(new Font("Arial", Font.BOLD, 14));
+        JLabel lblTituloPers = new JLabel("Escolha um avatar e escape dos inimigos", SwingConstants.CENTER);
+        lblTituloPers.setFont(new Font("Courier New", Font.BOLD, 15));
         lblTituloPers.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         painelPersonagens.add(lblTituloPers, BorderLayout.NORTH);
 
