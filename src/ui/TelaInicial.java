@@ -1,4 +1,5 @@
 package ui;
+import ui.TelaRanking;
 import core.JogoEndlessRunner;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -33,7 +34,7 @@ public class TelaInicial extends JFrame {
         JPanel painelBotoes = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        gbc.insets = new Insets(40, 40, 40, 40); //margem
+        gbc.insets = new Insets(20, 20, 40, 40); //margem
         gbc.gridx = 0; //coluna 0
         gbc.fill = GridBagConstraints.BOTH; //estica em tudo
         gbc.weightx = 1.0; // Ocupa toda a largura disponível proporcionalmente
@@ -60,9 +61,19 @@ public class TelaInicial extends JFrame {
                 JOptionPane.showMessageDialog(this, "Selecione um personagem!");
             }
         });
-        
+
         gbc.gridy = 0;
         painelBotoes.add(btnComecar, gbc);
+
+        JButton btnRanking = new JButton("RANKING");
+        btnRanking.setFont(new Font("Courier New", Font.BOLD, 35));
+        btnRanking.setBackground(Color.YELLOW);
+        btnRanking.addActionListener(e -> {
+            new TelaRanking().setVisible(true);
+        });
+
+        gbc.gridy = 1;
+        painelBotoes.add(btnRanking, gbc);
 
         JButton btnSair = new JButton("SAIR");
         btnSair.setFont(new Font("Courier New", Font.BOLD, 35));
@@ -76,6 +87,10 @@ public class TelaInicial extends JFrame {
 
         // Botão 2
         gbc.gridy = 1;
+        painelBotoes.add(btnSair, gbc);
+        
+        // Botão 3
+        gbc.gridy = 2;
         painelBotoes.add(btnSair, gbc);
 
         painelConteudo.add(painelBotoes);

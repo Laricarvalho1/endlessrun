@@ -1,7 +1,9 @@
 package ui;
-import javax.swing.*;
-
 import core.JogoEndlessRunner;
+import core.RankingService;
+import ui.TelaRanking;
+
+import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -106,6 +108,15 @@ public class TelaPontuacao extends JFrame {
                 iniciarJogo(skinJogador);
             }
         });
+        // Botão Ranking
+        JButton btnRanking = criarBotaoEstilizado("RANKING", new Color(218, 165, 32));
+        btnRanking.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TelaRanking telaRanking = new TelaRanking();
+                telaRanking.setVisible(true);
+            }
+        });
         
         // Botão Sair
         JButton btnSair = criarBotaoEstilizado("SAIR", new Color(178, 34, 34));
@@ -118,9 +129,16 @@ public class TelaPontuacao extends JFrame {
         
         painelBotoes.add(btnMenu);
         painelBotoes.add(btnReiniciar);
+        painelBotoes.add(btnRanking);
         painelBotoes.add(btnSair);
         
         add(painelBotoes, BorderLayout.SOUTH);
+
+        if (RankingService.verificaCandidato(pontuacaoFinal)) {
+            TelaNomeJogador telaNomeJogador = new TelaNomeJogador(this, pontuacaoFinal);
+            telaNomeJogador.setVisible(true);
+            telaNomeJogador.toFront();
+        }
     }
     
     private JButton criarBotaoEstilizado(String texto, Color corFundo) {
