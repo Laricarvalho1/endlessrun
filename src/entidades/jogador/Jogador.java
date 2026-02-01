@@ -167,8 +167,8 @@ public class Jogador extends ElementoDoJogo {
         /* Aplica uma margem de tolerancia */
         int hitX = x + margemDeFolga;
         int hitY = y + margemDeFolga;
-        int hitL = largura -(margemDeFolga*2);
-        int hitA = altura - (margemDeFolga*2);
+        int hitL = largura -(margemDeFolga*3);
+        int hitA = altura - (margemDeFolga*3);
 
         /* Teste AABB */
         return
@@ -183,7 +183,7 @@ public class Jogador extends ElementoDoJogo {
         // 3. Topo do Jogador acima da Base do Inimigo
         // False - jogador está abaixo do inimigo
         hitY < inY + inA &&
-        
+
         // 4. Base do Jogador abaixo do Topo do Inimigo
         //False - jogador está acima do inimigo 
         hitY + hitA > inY;
