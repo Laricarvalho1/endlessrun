@@ -1,5 +1,4 @@
 package ui;
-import ui.TelaRanking;
 import core.JogoEndlessRunner;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,7 +20,7 @@ public class TelaInicial extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // --- TÍTULO ---
+        // TÍTULO
         JLabel tituloPrincipal = new JLabel("DINOCOMP", SwingConstants.CENTER);
         tituloPrincipal.setFont(new Font("Courier New", Font.BOLD, 46));
         tituloPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
@@ -30,7 +29,7 @@ public class TelaInicial extends JFrame {
         JPanel painelConteudo = new JPanel(new GridLayout(1, 2));
         add(painelConteudo, BorderLayout.CENTER);
 
-        // --- PAINEL ESQUERDA (BOTÕES) ---
+        // PAINEL ESQUERDA (BOTÕES)
         JPanel painelBotoes = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
@@ -40,9 +39,7 @@ public class TelaInicial extends JFrame {
         gbc.weightx = 1.0; // Ocupa toda a largura disponível proporcionalmente
         gbc.weighty = 1.0; // Ocupa toda a altura disponível proporcionalmente
 
-        //gbc.ipadx = 160; 
-        //gbc.ipady = 120; 
-
+        /* Botão começar jogo */
         JButton btnComecar = new JButton("COMEÇAR");
         btnComecar.setFont(new Font("Courier New", Font.BOLD, 35));
         btnComecar.setBackground(Color.WHITE);
@@ -58,13 +55,12 @@ public class TelaInicial extends JFrame {
                 this.setVisible(false);
                 this.dispose();
             } else {
+                // exibe uma mensagem de erro se o usuario tentar iniciar o jogo sem selecionar um personagem
                 JOptionPane.showMessageDialog(this, "Selecione um personagem!");
             }
         });
 
-        gbc.gridy = 0;
-        painelBotoes.add(btnComecar, gbc);
-
+        /* Botão Ranking */
         JButton btnRanking = new JButton("RANKING");
         btnRanking.setFont(new Font("Courier New", Font.BOLD, 35));
         btnRanking.setBackground(Color.YELLOW);
@@ -72,34 +68,28 @@ public class TelaInicial extends JFrame {
             new TelaRanking().setVisible(true);
         });
 
-        gbc.gridy = 1;
-        painelBotoes.add(btnRanking, gbc);
-
+        /* Botão Sair */
         JButton btnSair = new JButton("SAIR");
         btnSair.setFont(new Font("Courier New", Font.BOLD, 35));
         btnSair.setBackground(Color.WHITE);
         btnSair.setBorder(new LineBorder(new Color(220, 20, 60), 2));
         btnSair.addActionListener(e -> System.exit(0)); 
 
-         // Botão 1
+        // Botão 1 - Começar o jogo
         gbc.gridy = 0;
         painelBotoes.add(btnComecar, gbc);
 
-        // Botão 2
+        // Botão 2 - Ranking
         gbc.gridy = 1;
-        painelBotoes.add(btnSair, gbc);
+        painelBotoes.add(btnRanking, gbc);
         
-        // Botão 3
+        //Botão 3 - Sair
         gbc.gridy = 2;
         painelBotoes.add(btnSair, gbc);
 
         painelConteudo.add(painelBotoes);
         
-       /* gbc.gridy = 1;
-        painelBotoes.add(btnSair, gbc);
-        painelConteudo.add(painelBotoes); */
-
-        // --- PAINEL DIREITA (GRID) ---
+        // PAINEL DIREITA (GRID)
         JPanel painelPersonagens = new JPanel(new BorderLayout());
         JLabel lblTituloPers = new JLabel("Escolha um avatar e escape dos inimigos", SwingConstants.CENTER);
         lblTituloPers.setFont(new Font("Courier New", Font.BOLD, 15));
@@ -116,8 +106,8 @@ public class TelaInicial extends JFrame {
 
             JToggleButton btn = new JToggleButton();
             btn.setActionCommand(pastaPerso); // Envia a pasta para o jogo
-            btn.setIcon(criarCard(nomeDino, caminhoFoto, false));
-            btn.setSelectedIcon(criarCard(nomeDino, caminhoFoto, true));
+            btn.setIcon(criarCard(nomeDino, caminhoFoto, false)); // Cria a caixa de seleção de personagem
+            btn.setSelectedIcon(criarCard(nomeDino, caminhoFoto, true)); // Se o personagem for selecionado cria uma versão alternativa da caixa
             btn.setBackground(Color.WHITE);
             btn.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
             
@@ -129,17 +119,23 @@ public class TelaInicial extends JFrame {
         painelConteudo.add(painelPersonagens);
     }
 
+    // Cria o card de seleção do personagem
     private ImageIcon criarCard(String txt, String path, boolean sel) {
+        /* Dimensões do card */
         int w = 90, h = 130;
+
+        /* Reserva espaço para carregar a imagem do personagem de forma otimizada */
         BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = img.createGraphics();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        // Tenta carregar a imagem do personagem
         try {
             File f = new File(path);
             if (f.exists()) g2.drawImage(ImageIO.read(f), 10, 10, w-20, h-45, null);
         } catch (IOException e) {}
 
+        // Aplica uma formatação caso o personagem seja selecionado
         if (sel) {
             g2.setColor(new Color(50, 205, 50, 35));
             g2.fillRect(2, 2, w-4, h-4);
@@ -150,6 +146,7 @@ public class TelaInicial extends JFrame {
         }
         g2.drawRect(2, 2, w-4, h-4);
 
+        // Escreve o nome do personagem
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Arial", Font.BOLD, 12));
         g2.drawString(txt, (w - g2.getFontMetrics().stringWidth(txt))/2, h-10);

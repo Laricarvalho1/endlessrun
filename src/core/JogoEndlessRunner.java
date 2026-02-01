@@ -20,14 +20,16 @@ import ui.*;
 public class JogoEndlessRunner extends JPanel implements ActionListener, KeyListener {
     
     private Jogador jogador;
+
+    /* Controle de velocidade do jogo - influencia direta na dificuldade */
     private double velocidadeDoJogo = 1.5;
     private final double velocidadeMaxima = 15;
 
-    /*tamanho da tela */
+    /* Tamanho da tela */
     private final int larguraOriginal = 800;
     private final int alturaOriginal = 400;
 
-    /*gerenciamento dos inimigos */
+    /* Gerenciamento dos inimigos */
     private final ArrayList<Inimigo> inimigos;
     private int cooldownSpawn = 0;
     private final int distanciaMinimaSpawn = 35; /*em pixels */
@@ -39,16 +41,17 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     private Image imagemFundo;
     private int pontuacao = 0;
 
-    /*efeitos sonoros */
+    /* Efeitos sonoros */
     private Clip musica; 
 
-    /*Caminho da skin atual */
+    /* Caminho da skin atual */
     private final String caminhoSkinAtual; 
 
-    // Construtor recebe o caminho da imagem (ex: "rosto1.png")
+    // Construtor recebe o caminho das imagens do personagem selecionado
     public JogoEndlessRunner(String caminhoImagem) {
         this.caminhoSkinAtual = caminhoImagem;
         
+        /* Configuração da janela */
         setPreferredSize(new Dimension(800, 400));
         setBackground(Color.PINK);
         setFocusable(true);
@@ -56,9 +59,13 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
 
         // Cria o jogador passando o caminho do arquivo
         jogador = new Jogador(caminhoSkinAtual);
+
+        // Inicia o array de inimigos
         inimigos = new ArrayList<>();
+
         random = new Random();
 
+        // Carrega o plano de fundo e a musica
         carregarRecursos();
         tocarMusica();
 
@@ -69,25 +76,18 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
 
     private void carregarRecursos() {
         System.out.println("O Java está procurando arquivos aqui: " + new File(".").getAbsolutePath());
-
-   
         try {
-            // Tenta carregar uma imagem (apenas exemplo, não estamos usando ela no draw)
-            // Se o arquivo não existir, o catch captura o erro
+            // Tenta carregar a imagem do plano de fundo
             File file = new File("src/assets/fundo.png");
             if(file.exists()) {
                 this.imagemFundo = ImageIO.read(file);
             } else{
-                System.out.println("Imagem fundo.png não encontrada!");
+                System.err.println("Imagem fundo.png não encontrada!");
             }
         } catch (IOException e) {
             System.err.println("Erro ao carregar recursos: " + e.getMessage());
-            // O jogo continua rodando mesmo sem a imagem (tratamento gracioso)
+            // O jogo continua rodando mesmo sem a imagem
         }
-    }
-
-    public void pararmusica(){
-    musica.stop(); 
     }
 
     public void tocarMusica() {
@@ -111,7 +111,12 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         }
     }
 
+    public void pararmusica(){
+    musica.stop(); 
+    }
+
     private void gerarInimigoAleatorio(){
+        // Sorteia um numero aleatorio para gerar um inimigo;
         int tipo = random.nextInt(11);
         if(tipo < 2){//20%
             inimigos.add(new Python(800,300));
@@ -131,17 +136,19 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
         else if(tipo < 8){//10%
             inimigos.add(new Teams(800,270));
         }
+        // 20% chance de não gerar um inimigo
+        // Torna o jogo mais aleatorio
     }
 
     private void processarGameOver() {
     gameOver = true;
+    /* Para a musica e o timer */
     timer.stop();
     pararmusica();
     
     // Chama a tela de pontuação após um breve delay
-    Timer delayTimer = new Timer(1000, new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent evt) {
+    Timer delayTimer = new Timer(800, new ActionListener() {
+        @Override public void actionPerformed(ActionEvent evt) {
             mostrarTelaPontuacao();
         }
     });
@@ -149,31 +156,35 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
     delayTimer.start();
     }
 
+    // Atualiza os dados do jogo a cada frame
     @Override public void actionPerformed(ActionEvent e) {
         if(gameOver) return;
 
-        if(velocidadeDoJogo < velocidadeMaxima)
+        // Aumenta a velocidade do jogo
+        if(velocidadeDoJogo < velocidadeMaxima){
             velocidadeDoJogo += 0.001;
+        }
 
         pontuacao++;
         jogador.atualizar();
 
-        // verifica o cooldown de inimigos
+        // Verifica o cooldown de inimigos
         if(cooldownSpawn > 0) {
             cooldownSpawn--;
         }
-        // gera um inimigo aleatoriamente
+
+        // Gera um inimigo aleatoriamente e define um novo cooldown de spawn
         else{
             gerarInimigoAleatorio();
-           cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn) - velocidadeDoJogo);
+            cooldownSpawn =(int)(random.nextInt(distanciaMinimaSpawn, distanciaMaximaSpawn) - velocidadeDoJogo);
         }
 
+        /* Interações com inimigos */
         for (int i = inimigos.size() - 1; i >= 0; i--) {
             Inimigo inimigo = inimigos.get(i);
             inimigo.atualizar(velocidadeDoJogo);
 
-            // Usa matemática simples em vez de criar objetos Rectangle (getBounds)
-            // Assumindo que Inimigo tem x, y, largura, altura acessíveis
+            // Testa a colisão para gerar um GameOver
             if (jogador.colideCom(inimigo.x, inimigo.y, inimigo.largura, inimigo.altura)) {
                 processarGameOver();
                 return;
@@ -185,79 +196,73 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
             }
         }
 
+        // Chama o metodo paint para atualizar a tela
         repaint(); 
     }
 
+    // Gera cada frame do jogo
     @Override protected void paintComponent(Graphics g) {
+        // Limpa a tela
         super.paintComponent(g);
+        
+        /* Ajuste para a resolução de tela cheia (resolução original é 800 x 400)*/
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform oldTransform = g2d.getTransform();
-
-        Toolkit.getDefaultToolkit().sync();
 
         double escalaX = (double) getWidth() / larguraOriginal;
         double escalaY = (double) getHeight() / alturaOriginal;
 
         g2d.scale(escalaX, escalaY);
 
+        // Evita perca de frames no linux
+        Toolkit.getDefaultToolkit().sync();
+
         if (this.imagemFundo != null){
-            //desenha imagem na posição 0,0 (canto superior esquerdo)
+            // Desenha imagem na posição 0,0 (canto superior esquerdo)
             g.drawImage(this.imagemFundo, 0, 0, larguraOriginal, alturaOriginal, null);
         }
 
+        /* Desenha o jogador e os inimigos */
         jogador.desenhar(g);
 
         for (Inimigo i : inimigos) {
             i.desenhar(g);
         }
+
+        /* Desenha a pontuação */
         g.setColor(Color.BLUE); 
         g.setFont(new Font("Courier New", Font.BOLD, 20)); 
        
-       // Desenha no X=650 (direita) e Y=30 (topo)
+       // Desenha no X=20 (esquerda) e Y=30 (topo)
        g.drawString("PONTUAÇÃO: " + pontuacao, 20, 30); 
-       
-        if (gameOver) {
-            g.setColor(Color.BLUE);
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString("GAME OVER - Pressione espaço para reiniciar", 150, 200);
-        }
 
-        g2d.setTransform(oldTransform);
-        //g.dispose(); isso aqui tira a capacidade do java de desenhar a janela
+       g2d.setTransform(oldTransform);
     }
 
     @Override public void keyPressed(KeyEvent e) {
+        // precionar W ou SPACE faz o jogador pular
         if (e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_W) {
             jogador.pular();
         }
-        if (e.getKeyCode() == KeyEvent.VK_SPACE && gameOver) {
-            //reiniciarJogo();
-            // A tela de pontuação tornou isso obsoleto, desativei para evitar conflitos
-        }
+
+        // precionar S ou CTRL faz o jogador diminuir
         if (e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_S){
             jogador.Encolher();
         }
     }
 
     @Override public void keyTyped(KeyEvent e) {}
+
     @Override public void keyReleased(KeyEvent e){
+        // parar de precionar W ou SPACE faz o jogador interromper o pulo
         if(e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_W){
             jogador.interromperPulo();
         }
+
+        // parar de precionar S ou CTRL faz o jogador voltar ao tamanho normal
         if(e.getKeyCode() == KeyEvent.VK_CONTROL || e.getKeyCode() == KeyEvent.VK_S){
             jogador.ResetarTamanho();
         }
-    }
-
-    // Tela de pontuação tornou obsoleto
-    private void reiniciarJogo() {
-        // Recria o jogador usando a mesma imagem
-        jogador = new Jogador(caminhoSkinAtual);
-        inimigos.clear();
-        pontuacao = 0;
-        gameOver = false;
-        timer.start();
-        velocidadeDoJogo = 1;
     }
 
     private void mostrarTelaPontuacao() {

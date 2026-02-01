@@ -1,13 +1,10 @@
 package ui;
 import core.JogoEndlessRunner;
 import core.RankingService;
-import ui.TelaRanking;
-
-import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class TelaPontuacao extends JFrame {
     
@@ -87,13 +84,15 @@ public class TelaPontuacao extends JFrame {
         // Botão Menu
         JButton btnMenu = criarBotaoEstilizado("MENU", new Color(70, 130, 180));
         btnMenu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
+            @Override public void actionPerformed(ActionEvent e) {
+                dispose(); // Fecha a janela atual
                 SwingUtilities.invokeLater(() -> {
                     try {
+                        // Reseta o estilo da janela para o padrão do sistema (linux/windows/etc...)
                         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } catch (Exception ex) {}
+                    } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | UnsupportedLookAndFeelException ex) {}
+
+                    // Gera uma nova tela inicial
                     new TelaInicial().setVisible(true);
                 });
             }
@@ -102,17 +101,16 @@ public class TelaPontuacao extends JFrame {
         // Botão Reiniciar
         JButton btnReiniciar = criarBotaoEstilizado("REINICIAR", new Color(34, 139, 34));
         btnReiniciar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                iniciarJogo(skinJogador);
+            @Override public void actionPerformed(ActionEvent e) {
+                dispose(); // Fecha a janela atual
+                iniciarJogo(skinJogador); // Inicia um novo jogo com a mesma skin
             }
         });
+
         // Botão Ranking
         JButton btnRanking = criarBotaoEstilizado("RANKING", new Color(218, 165, 32));
         btnRanking.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            @Override public void actionPerformed(ActionEvent e) {
                 TelaRanking telaRanking = new TelaRanking();
                 telaRanking.setVisible(true);
             }
@@ -121,8 +119,7 @@ public class TelaPontuacao extends JFrame {
         // Botão Sair
         JButton btnSair = criarBotaoEstilizado("SAIR", new Color(178, 34, 34));
         btnSair.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            @Override public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
@@ -152,10 +149,10 @@ public class TelaPontuacao extends JFrame {
         
         // Efeito hover
         botao.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
+            @Override public void mouseEntered(java.awt.event.MouseEvent evt) {
                 botao.setBackground(corFundo.brighter());
             }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
+            @Override public void mouseExited(java.awt.event.MouseEvent evt) {
                 botao.setBackground(corFundo);
             }
         });

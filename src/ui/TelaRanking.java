@@ -1,10 +1,10 @@
 package ui;
 import core.RankingService;
 import entidades.jogador.*;
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class TelaRanking extends JFrame {
 
@@ -65,6 +65,7 @@ public class TelaRanking extends JFrame {
         add(lblPosicao);
         add(centro);
     }
+    
     // define a cor do painel com base na posição
     private Color corPorPosicao(int posicao) {
         return switch (posicao) {
