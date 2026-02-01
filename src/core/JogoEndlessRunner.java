@@ -92,7 +92,8 @@ public class JogoEndlessRunner extends JPanel implements ActionListener, KeyList
 
     public void tocarMusica() {
         try {
-            // Carrega o arquivo de áudio - ESSE AUDIO PRECISA COLOCAR OS CRÉDITOS - http://opengameart.org/
+            // Carrega o arquivo de áudio 
+            // CRÉDITOS - http://opengameart.org/
             File arquivoAudio = new File("src/Assets/musica.wav");
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(arquivoAudio);
             
