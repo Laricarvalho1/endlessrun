@@ -1,6 +1,6 @@
 package ui;
 import core.JogoEndlessRunner;
-import core.RankingService;
+import core.RankingUtils;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -131,7 +131,7 @@ public class TelaPontuacao extends JFrame {
         
         add(painelBotoes, BorderLayout.SOUTH);
 
-        if (RankingService.verificaCandidato(pontuacaoFinal)) {
+        if (RankingUtils.verificaCandidato(pontuacaoFinal)) {
             TelaNomeJogador telaNomeJogador = new TelaNomeJogador(this, pontuacaoFinal);
             telaNomeJogador.setVisible(true);
             telaNomeJogador.toFront();

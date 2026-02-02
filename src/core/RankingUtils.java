@@ -3,7 +3,7 @@ import entidades.jogador.JogadorRanking;
 import java.io.*;
 import java.util.*;
 
-public class RankingService {
+public class RankingUtils {
     private static final int MAX_JOGADORES = 5;
     private static final String ARQUIVO = "ranking.txt";
 

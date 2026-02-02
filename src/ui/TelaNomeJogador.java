@@ -1,5 +1,5 @@
 package ui;
-import core.RankingService;
+import core.RankingUtils;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
@@ -56,7 +56,7 @@ public class TelaNomeJogador extends JDialog {
                         JOptionPane.WARNING_MESSAGE
                 );
             } else {
-                RankingService.adicionarJogador(nome, pontuacao);
+                RankingUtils.adicionarJogador(nome, pontuacao);
                 dispose();
             }
         });

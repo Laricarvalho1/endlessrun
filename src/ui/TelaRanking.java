@@ -1,5 +1,5 @@
 package ui;
-import core.RankingService;
+import core.RankingUtils;
 import entidades.jogador.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class TelaRanking extends JFrame {
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         painelPrincipal.setBackground(Color.DARK_GRAY);
 
-        ArrayList<JogadorRanking> ranking = RankingService.lerRanking();
+        ArrayList<JogadorRanking> ranking = RankingUtils.lerRanking();
 
         int posicao = 1;
         for (JogadorRanking j : ranking) {
