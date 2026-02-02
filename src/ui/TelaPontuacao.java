@@ -77,7 +77,7 @@ public class TelaPontuacao extends JFrame {
         add(painelCentral, BorderLayout.CENTER);
         
         // Painel inferior com botões
-        JPanel painelBotoes = new JPanel(new GridLayout(1, 3, 20, 0));
+        JPanel painelBotoes = new JPanel(new GridLayout(1, 4, 20, 0));
         painelBotoes.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         painelBotoes.setBackground(new Color(240, 248, 255));
         
@@ -168,12 +168,5 @@ public class TelaPontuacao extends JFrame {
         frameJogo.setLocationRelativeTo(null);
         frameJogo.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frameJogo.setVisible(true);
-    }
-    
-    public static void main(String[] args) {
-        // Teste da tela de pontuação
-        SwingUtilities.invokeLater(() -> {
-            new TelaPontuacao(1234, "src/Assets/Skins/perso1").setVisible(true);
-        });
     }
 }

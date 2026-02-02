@@ -71,8 +71,4 @@ public class TelaNomeJogador extends JDialog {
 
         add(painel);
     }
-
-    public static void main(String[] args) {
-        new TelaNomeJogador(null, 100).setVisible(true);
-    }
 }

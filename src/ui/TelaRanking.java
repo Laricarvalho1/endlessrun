@@ -76,11 +76,4 @@ public class TelaRanking extends JFrame {
         };
     }
 }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            TelaRanking telaRanking = new TelaRanking();
-            telaRanking.setVisible(true);
-        });
-    }
 }
